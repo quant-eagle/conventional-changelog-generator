@@ -1,3 +1,5 @@
+[![version](https://img.shields.io/badge/version-1.0.0-yellow.svg)](https://semver.org)
+
 ### :pencil2: :page_with_curl: Conventional Commit Changelog Generator (GitHub Action)
 
 Automatically generate the changelog based on your commit convention for your latest tagged version with [Changelog Generator](https://github.com/Helmisek/conventional-changelog-generator).
