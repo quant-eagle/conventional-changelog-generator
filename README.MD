@@ -1,4 +1,4 @@
-[![version](https://img.shields.io/badge/version-1.0.3-yellow.svg)](https://semver.org)
+[![version](https://img.shields.io/badge/version-1.0.4-yellow.svg)](https://semver.org)
 
 ### :pencil2: :page_with_curl: Conventional Commit Changelog Generator (GitHub Action)
 
@@ -9,7 +9,7 @@ The changelog is accessible as action output available to other actions via [out
 ## Example usage
 
 ```yaml
-uses: Helmisek/conventional-changelog-generator@v1.0.3
+uses: Helmisek/conventional-changelog-generator@v1.0.4
 with:
   token: ${{ secrets.GITHUB_TOKEN }}
 ```
