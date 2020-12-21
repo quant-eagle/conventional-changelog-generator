@@ -1,0 +1,20 @@
+on:
+  push:
+    tags:
+      - "v*"
+
+jobs:
+  changelog_job:
+    runs-on: ubuntu-latest
+    name: Changelog generator
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Changelog generation step
+        uses: ./
+        id: changelog-generator
+        with:
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+          commit-types: "fix:Bug Fixes,feat:Features,refactor:Refactoring"
+      - name: Print changelog
+        run: echo "${{steps.changelog-generator.outputs.changelog}}"

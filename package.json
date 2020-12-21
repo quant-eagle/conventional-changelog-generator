@@ -1,0 +1,25 @@
+{
+  "name": "conventional-commit-changelog-generator",
+  "version": "1.0.0",
+  "description": "Generate a changelog based on the conventional commit history for the latest tag.",
+  "main": "index.js",
+  "scripts": {
+    "compile": "ncc build index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:Helmisek/conventional-changelog-generator.git"
+  },
+  "author": "Jirka Helmich",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Helmisek/conventional-changelog-generator/issues"
+  },
+  "homepage": "https://github.com/Helmisek/conventional-changelog-generator#readme",
+  "dependencies": {
+    "@actions/core": "^1.2.6",
+    "@actions/github": "^4.0.0",
+    "compare-versions": "^3.6.0"
+  }
+}
