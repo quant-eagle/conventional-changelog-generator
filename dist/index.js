@@ -6048,9 +6048,22 @@ const createCommitCategories = (mapping) => {
  */
 const obtainTemplate = (filePath) => {
   if (!filePath) {
-    return fs.readFileSync(`${workspace}/CHANGELOG.tpl.md`, "utf8");
+    return fs.readFileSync("CHANGELOG.tpl.md", "utf8");
   } else {
     return fs.readFileSync(`${workspace}/${templateFilePath}`, "utf8");
+  }
+};
+
+/**
+ * Given a message as a string, check whether it is a multiline string.
+ * If so, cut the rest of the string after first new line.
+ * Else return the string in it's original form.
+ */
+const createSingleLineMessage = (message) => {
+  if (message.indexOf("\n") == -1) {
+    return message;
+  } else {
+    return message.substring(0, message.indexOf("\n"));
   }
 };
 
@@ -6072,7 +6085,7 @@ const changelogGenerator = (version, commitData) => {
   core.info("creating changelog template");
   const templateCategories = new Map();
   commitData.forEach((val) => {
-    const commit = val.commit.message;
+    const commit = createSingleLineMessage(val.commit.message);
     const category = categories.find((value) => {
       if (commit.indexOf(value.type) != -1) {
         return value;
