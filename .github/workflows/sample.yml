@@ -16,5 +16,6 @@ jobs:
         with:
           repo-token: ${{ secrets.GITHUB_TOKEN }}
           commit-types: "fix:Bug Fixes,feat:Features,refactor:Refactoring"
+          template-path: "CHANGELOG.tpl.md"
       - name: Print changelog
         run: echo "${{steps.changelog-generator.outputs.changelog}}"
