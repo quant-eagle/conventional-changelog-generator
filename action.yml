@@ -1,4 +1,4 @@
-name: Conventiontional commit changelog generator
+name: Conventional changelog generator
 description: Generate a changelog based on the conventional commit history for the latest tag.
 inputs:
   repo-token:
