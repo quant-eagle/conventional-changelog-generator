@@ -28,7 +28,7 @@ const createCommitCategories = (mapping) => {
  */
 const obtainTemplate = (filePath) => {
   if (!filePath) {
-    return fs.readFileSync(`${workspace}/CHANGELOG.tpl.md`, "utf8");
+    return fs.readFileSync(`CHANGELOG.tpl.md`, "utf8");
   } else {
     return fs.readFileSync(`${workspace}/${templateFilePath}`, "utf8");
   }
