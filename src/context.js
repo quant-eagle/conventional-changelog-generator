@@ -25,6 +25,7 @@ const workspace = process.env.GITHUB_WORKSPACE;
 const token = core.getInput("repo-token", { required: true });
 const commitTypes = core.getInput("commit-types", { required: true });
 const templateFilePath = core.getInput("template-path", { required: false });
+const tagRegex = core.getInput("tag-regex", { required: false });
 
 if (!token) {
   throw Error('"token" input is missing!');
@@ -40,4 +41,5 @@ module.exports = {
   commitTypes,
   workspace,
   templateFilePath,
+  tagRegex,
 };

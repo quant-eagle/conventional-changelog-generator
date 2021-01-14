@@ -5995,6 +5995,7 @@ const workspace = process.env.GITHUB_WORKSPACE;
 const token = core.getInput("repo-token", { required: true });
 const commitTypes = core.getInput("commit-types", { required: true });
 const templateFilePath = core.getInput("template-path", { required: false });
+const tagRegex = core.getInput("tag-regex", { required: false });
 
 if (!token) {
   throw Error('"token" input is missing!');
@@ -6010,6 +6011,7 @@ module.exports = {
   commitTypes,
   workspace,
   templateFilePath,
+  tagRegex,
 };
 
 
@@ -6161,7 +6163,7 @@ module.exports = generator;
 const core = __webpack_require__(6024);
 const compareVersions = __webpack_require__(7597);
 const octokit = __webpack_require__(7323);
-const { repo, owner } = __webpack_require__(348);
+const { repo, owner, tagRegex } = __webpack_require__(348);
 const rangedCommits = __webpack_require__(2259);
 
 /**
@@ -6194,8 +6196,9 @@ const releaseCommitRange = async (releaseTags) => {
   const currentReleaseIndex = 0;
   const toSHA = releases[currentReleaseIndex].commit.sha;
   core.info(`current release sha: "${toSHA}"`);
-  const previousReleaseIndex = releases.findIndex(
-    (release, index) => index > currentReleaseIndex
+  const previousReleaseIndex = findPreviousReleaseIndex(
+    releases,
+    currentReleaseIndex
   );
   const fromSHA = await findBaseSha(previousReleaseIndex, releases, toSHA);
   core.info(`previous release sha: "${fromSHA}"`);
@@ -6204,6 +6207,22 @@ const releaseCommitRange = async (releaseTags) => {
     toSHA,
   };
 };
+
+/***
+ * If there is a `tagRegex` option set then perform a RegExp search while filtering release.
+ * Otherwise just find a release with higher index than `currentReleaseIndex`.
+ */
+function findPreviousReleaseIndex(releases, currentReleaseIndex) {
+  if (tagRegex == null) {
+    return releases.findIndex((_, index) => index > currentReleaseIndex);
+  } else {
+    const versionRegExp = new RegExp(`${tagRegex}`, "g");
+    return releases.findIndex(
+      (release, index) =>
+        index > currentReleaseIndex && release.name.match(versionRegExp) != null
+    );
+  }
+}
 
 /**
  * If there is no previous release (thus meaning there is only a 1 tag in the repository) then

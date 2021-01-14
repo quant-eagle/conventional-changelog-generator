@@ -1,7 +1,7 @@
 const core = require("@actions/core");
 const compareVersions = require("compare-versions");
 const octokit = require("./octokit");
-const { repo, owner } = require("./context");
+const { repo, owner, tagRegex } = require("./context");
 const rangedCommits = require("./commits");
 
 /**
@@ -34,8 +34,9 @@ const releaseCommitRange = async (releaseTags) => {
   const currentReleaseIndex = 0;
   const toSHA = releases[currentReleaseIndex].commit.sha;
   core.info(`current release sha: "${toSHA}"`);
-  const previousReleaseIndex = releases.findIndex(
-    (release, index) => index > currentReleaseIndex
+  const previousReleaseIndex = findPreviousReleaseIndex(
+    releases,
+    currentReleaseIndex
   );
   const fromSHA = await findBaseSha(previousReleaseIndex, releases, toSHA);
   core.info(`previous release sha: "${fromSHA}"`);
@@ -44,6 +45,22 @@ const releaseCommitRange = async (releaseTags) => {
     toSHA,
   };
 };
+
+/***
+ * If there is a `tagRegex` option set then perform a RegExp search while filtering release.
+ * Otherwise just find a release with higher index than `currentReleaseIndex`.
+ */
+function findPreviousReleaseIndex(releases, currentReleaseIndex) {
+  if (tagRegex == null) {
+    return releases.findIndex((_, index) => index > currentReleaseIndex);
+  } else {
+    const versionRegExp = new RegExp(`${tagRegex}`, "g");
+    return releases.findIndex(
+      (release, index) =>
+        index > currentReleaseIndex && release.name.match(versionRegExp) != null
+    );
+  }
+}
 
 /**
  * If there is no previous release (thus meaning there is only a 1 tag in the repository) then

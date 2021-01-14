@@ -9,7 +9,10 @@ inputs:
     required: true
   template-path:
     description: Changelog template
-    required: true
+    required: false
+  tag-regex:
+    description: Specific regex to filter tags by and to version just between these (useful for SemVer labels)
+    required: false
 outputs:
   changelog:
     description: Generated changelog for the latest push version tag
