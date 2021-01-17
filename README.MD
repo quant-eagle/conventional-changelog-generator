@@ -9,7 +9,7 @@ The changelog is accessible as action output available to other actions via [out
 ## Example usage
 
 ```yaml
-uses: Helmisek/conventional-changelog-generator@v1.0.6
+uses: Helmisek/conventional-changelog-generator@v1.0.6-release
 with:
   token: ${{ secrets.GITHUB_TOKEN }}
 ```
