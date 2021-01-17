@@ -1,7 +1,7 @@
 on:
   push:
     tags:
-      - "v*"
+      - "v*-release"
 
 jobs:
   changelog_job:
@@ -10,6 +10,9 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
+      - name: Get the version
+        id: get_version
+        run: echo ::set-output name=VERSION::$(echo $GITHUB_REF | cut -d / -f 3)
       - name: Changelog generation step
         uses: ./
         id: changelog-generator
@@ -17,5 +20,9 @@ jobs:
           repo-token: ${{ secrets.GITHUB_TOKEN }}
           commit-types: "fix:Bug Fixes,feat:Features,refactor:Refactoring"
           template-path: "CHANGELOG.tpl.md"
+          current-tag: ${{ steps.get_version.outputs.VERSION }}
+          tag-regex: "-release"
+      - name: Print version
+        run: echo ${{ steps.get_version.outputs.VERSION }}
       - name: Print changelog
         run: echo "${{steps.changelog-generator.outputs.changelog}}"

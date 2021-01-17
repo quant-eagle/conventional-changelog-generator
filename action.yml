@@ -4,6 +4,9 @@ inputs:
   repo-token:
     description: Github repository token
     required: true
+  current-tag:
+    description: Current tag selected to be the start of the changelog range
+    required: false
   commit-types:
     description: Conventional commit type mapping
     required: true

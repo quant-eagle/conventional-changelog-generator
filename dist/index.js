@@ -5996,6 +5996,7 @@ const token = core.getInput("repo-token", { required: true });
 const commitTypes = core.getInput("commit-types", { required: true });
 const templateFilePath = core.getInput("template-path", { required: false });
 const tagRegex = core.getInput("tag-regex", { required: false });
+const currentTag = core.getInput("current-tag", { required: false });
 
 if (!token) {
   throw Error('"token" input is missing!');
@@ -6012,6 +6013,7 @@ module.exports = {
   workspace,
   templateFilePath,
   tagRegex,
+  currentTag,
 };
 
 
@@ -6163,7 +6165,7 @@ module.exports = generator;
 const core = __webpack_require__(6024);
 const compareVersions = __webpack_require__(7597);
 const octokit = __webpack_require__(7323);
-const { repo, owner, tagRegex } = __webpack_require__(348);
+const { repo, owner, tagRegex, currentTag } = __webpack_require__(348);
 const rangedCommits = __webpack_require__(2259);
 
 /**
@@ -6177,11 +6179,12 @@ const releaseTags = async () => {
     repo,
   });
   core.info(`fetched all ${tags.length} tags in repository.`);
-  const releaseTags = tags
-    .filter((tag) => compareVersions.validate(tag.name))
-    .sort((a, b) => compareVersions(a.name, b.name))
-    .reverse();
+  const releaseTags = tags.filter((tag) => compareVersions.validate(tag.name));
   core.info(`sorted tags by semver.`);
+  core.info(`showing up to 10 last tags...`);
+  releaseTags.slice(0, 10).forEach((release, index) => {
+    core.info(`tag ${release.name}`);
+  });
   return releaseTags;
 };
 
@@ -6193,23 +6196,40 @@ const releaseCommitRange = async (releaseTags) => {
   core.info("fetch all releases...");
   const releases = releaseTags;
   core.info(`fetched all ${releases.length} releases.`);
-  const currentReleaseIndex = 0;
+  const currentReleaseIndex = findCurrentReleaseIndex(releases);
+  core.info(`current release index: ${currentReleaseIndex}`);
   const toSHA = releases[currentReleaseIndex].commit.sha;
   core.info(`current release sha: "${toSHA}"`);
   const previousReleaseIndex = findPreviousReleaseIndex(
     releases,
     currentReleaseIndex
   );
+  core.info(`previous release index: ${previousReleaseIndex}`);
   const fromSHA = await findBaseSha(previousReleaseIndex, releases, toSHA);
   core.info(`previous release sha: "${fromSHA}"`);
   return {
+    releaseName: releases[currentReleaseIndex].name,
     fromSHA,
     toSHA,
   };
 };
 
-/***
- * If there is a `tagRegex` option set then perform a RegExp search while filtering release.
+/**
+ * If there is a `current-tag` option set then find the index of the provided tag.
+ * Otherwise fallback to the first provided tag (0).
+ */
+function findCurrentReleaseIndex(releases) {
+  if (currentTag == null) {
+    return 0;
+  } else {
+    return releases.findIndex((release, _) =>
+      release.name.includes(currentTag)
+    );
+  }
+}
+
+/**
+ * If there is a `tag-regex` option set then perform a RegExp search while filtering release.
  * Otherwise just find a release with higher index than `currentReleaseIndex`.
  */
 function findPreviousReleaseIndex(releases, currentReleaseIndex) {
@@ -6258,7 +6278,7 @@ const commitHistory = async () => {
   const commits = await rangedCommits(commitRange.fromSHA, commitRange.toSHA);
   return {
     commits,
-    versionName: releases[0].name,
+    versionName: commitRange.releaseName,
   };
 };
 

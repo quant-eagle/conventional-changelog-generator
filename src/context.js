@@ -26,6 +26,7 @@ const token = core.getInput("repo-token", { required: true });
 const commitTypes = core.getInput("commit-types", { required: true });
 const templateFilePath = core.getInput("template-path", { required: false });
 const tagRegex = core.getInput("tag-regex", { required: false });
+const currentTag = core.getInput("current-tag", { required: false });
 
 if (!token) {
   throw Error('"token" input is missing!');
@@ -42,4 +43,5 @@ module.exports = {
   workspace,
   templateFilePath,
   tagRegex,
+  currentTag,
 };

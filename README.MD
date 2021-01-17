@@ -1,4 +1,4 @@
-[![version](https://img.shields.io/badge/version-1.0.5-yellow.svg)](https://semver.org)
+[![version](https://img.shields.io/badge/version-1.0.6-yellow.svg)](https://semver.org)
 
 ### :pencil2: :page_with_curl: Conventional Commit Changelog Generator (GitHub Action)
 
@@ -9,7 +9,7 @@ The changelog is accessible as action output available to other actions via [out
 ## Example usage
 
 ```yaml
-uses: Helmisek/conventional-changelog-generator@v1.0.5
+uses: Helmisek/conventional-changelog-generator@v1.0.6
 with:
   token: ${{ secrets.GITHUB_TOKEN }}
 ```
@@ -19,6 +19,7 @@ with:
 | Name            | Description                          | Required | Example                       |
 | --------------- | ------------------------------------ | -------- | ----------------------------- |
 | `commit-types`  | Commit -> changelog mapping          | Yes      | `feat:Features,bug:Bug Fixes` |
+| `current-tag`   | Currently selected tag               | No       | `v1.0.0+1-internal`           |
 | `template-path` | Path to a custom template to use     | No       | `CHANGELOG.tpl.md`            |
 | `tag-regex`     | A custom regex to filter versions by | No       | `internal`                    |
 
