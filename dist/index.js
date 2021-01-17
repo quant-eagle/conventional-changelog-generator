@@ -6180,7 +6180,6 @@ const releaseTags = async () => {
   });
   core.info(`fetched all ${tags.length} tags in repository.`);
   const releaseTags = tags.filter((tag) => compareVersions.validate(tag.name));
-  core.info(`sorted tags by semver.`);
   core.info(`showing up to 10 last tags...`);
   releaseTags.slice(0, 10).forEach((release, index) => {
     core.info(`tag ${release.name}`);
